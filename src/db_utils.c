@@ -25,8 +25,8 @@ int ensure_db_ready(void) {
                     "name text primary key not null, "
                     "package_type text not null, "
                     "source_url text not null, "
-                    "installed int not null, "
-                    "version text not null "
+                    "installed int not null default 0, "
+                    "version text not null default '' "
                     ") without rowid";
   int rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
   if (rc != SQLITE_OK) {
