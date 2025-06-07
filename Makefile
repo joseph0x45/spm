@@ -1,9 +1,9 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude -std=c17 -Werror -pedantic
+CFLAGS = -Wall -Wextra -std=c17 -Werror -pedantic
 SRC_DIR = src
 OBJ_DIR = build
 BIN = build/bin/spm.out
-LIBS = -lcurl
+LIBS = -lcurl -lsqlite3
 
 SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
