@@ -60,11 +60,11 @@ int main(int argc, char **argv) {
     }
   }
   if (add_flag) {
-    Package package = {
-        .name = package_name,
-        .source = package_source,
-        .type = package_type,
-    };
+    Package package = {.name = package_name,
+                       .source = package_source,
+                       .type = package_type,
+                       .installed = 0,
+                       .version = ""};
     return spm_add_package(&package);
   }
   return 0;

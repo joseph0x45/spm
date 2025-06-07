@@ -21,11 +21,13 @@ int ensure_db_ready(void) {
     return -1;
   }
   char *err_msg = NULL;
-  const char *sql = "CREATE TABLE IF NOT EXISTS PACKAGES ("
-                    "name TEXT PRIMARY KEY NOT NULL, "
-                    "package_type TEXT NOT NULL, "
-                    "source_url TEXT NOT NULL "
-                    ") WITHOUT ROWID";
+  const char *sql = "create table if not exists packages ("
+                    "name text primary key not null, "
+                    "package_type text not null, "
+                    "source_url text not null, "
+                    "installed int not null, "
+                    "version text not null "
+                    ") without rowid";
   int rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
   if (rc != SQLITE_OK) {
     fprintf(stderr, "Database Error: %s\n", err_msg);

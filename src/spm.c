@@ -17,11 +17,11 @@ int spm_check_option_argument(const char *optarg, const char *opt_name) {
   return 1;
 }
 
-static void print_package(const Package *package) {
-  printf("Name: %s\n", package->name);
-  printf("Type: %s\n", package->type);
-  printf("Source: %s\n", package->source);
-}
+// static void print_package(const Package *package) {
+//   printf("Name: %s\n", package->name);
+//   printf("Type: %s\n", package->type);
+//   printf("Source: %s\n", package->source);
+// }
 
 static int is_valid_type(const char *type) {
   for (int i = 0; i < NUMBER_OF_VALID_TYPES; i++) {
@@ -59,13 +59,12 @@ int spm_add_package(const Package *package) {
     return -1;
   }
   ENSURE_DB_READY;
-  print_package(package);
   sqlite3 *db = get_db_connection();
   if (!db) {
     return -1;
   }
-  const char *sql =
-      "INSERT INTO PACKAGES(name, package_type, source_url) VALUES(?, ?, ?);";
+  const char *sql = "insert into packages(name, package_type, source_url, "
+                    "installed, version) values(?, ?, ?, ?, ?);";
   sqlite3_stmt *stmt;
   int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
   if (rc != SQLITE_OK) {
@@ -87,6 +86,18 @@ int spm_add_package(const Package *package) {
   rc = sqlite3_bind_text(stmt, 3, package->source, -1, SQLITE_STATIC);
   if (rc != SQLITE_OK) {
     fprintf(stderr, "Error: Failed to bind 'source': %s\n", sqlite3_errmsg(db));
+    goto cleanup;
+  }
+  rc = sqlite3_bind_int(stmt, 4, package->installed);
+  if (rc != SQLITE_OK) {
+    fprintf(stderr, "Error: Failed to bind 'installed': %s\n",
+            sqlite3_errmsg(db));
+    goto cleanup;
+  }
+  rc = sqlite3_bind_text(stmt, 5, package->version, -1, SQLITE_STATIC);
+  if (rc != SQLITE_OK) {
+    fprintf(stderr, "Error: Failed to bind 'version': %s\n",
+            sqlite3_errmsg(db));
     goto cleanup;
   }
   rc = sqlite3_step(stmt);
